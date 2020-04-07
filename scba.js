@@ -46,7 +46,8 @@ function postData () {
       device: { name: 'SanCheong PASS', mac: 'BB:A0:50:C2:82:D2', rssi: -70 }, 
       gatt: { service: 'Notify', hex: hex, 
         characteristic: '0003cdd1-0000-1000-8000-00805f9b0131', 
-        timestamp: moment().unix()*1000 } 
+        update: moment().unix()*1000 },
+      uuid: 'Simulator_55902ffb-f30f-4b82-a673-ee8edf2dc631'
       }
   }, (error, res, body) => {
     if (error) {

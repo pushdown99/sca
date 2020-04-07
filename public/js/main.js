@@ -1,4 +1,3 @@
-
 (function ($) {
   "use strict";
 
@@ -127,7 +126,8 @@
 // hyhwang
 //
   function getSCBA () {
-    var url = "/json/scba/?timestamp="+lastGetSCBA+"&limit=10";
+    var uuid = document.getElementById("uuid").innerHTML;
+    var url = "/json/scba/?uuid=" + uuid + "&timestamp="+lastGetSCBA+"&limit=10";
     console.log(url);
     $.getJSON(url, function(data) {
       console.log(data.length);
@@ -155,16 +155,39 @@
   }
 
   function getWatch () {
-    var url = "/json/watch/?timestamp="+lastGetWatch+"&limit=10";
+    var uuid = document.getElementById("uuid").innerHTML;
+    var url = "/json/watch/?uuid=" + uuid + "&timestamp="+lastGetWatch+"&limit=50";
     console.log(url);
     $.getJSON(url, function(data) {
-      console.log(data);
+      var flag_hrm = 0;
+      var flag_accel = 0;
+      var flag_gyro = 0;
+      var flag_pressure = 0;
+      var flag_light = 0;
       if(data.length > 0) {
         data.forEach((t) => {
-          if (t.name == 'heartrate') {
-          console.log (t);
-          document.getElementById("heartrate").innerHTML = parseInt(t.v1,10);
-          addChartData(myChart4,"HeartRate", parseInt(t.v1,10));
+          if (t.name == 'hrm' && flag_hrm == 0) {
+            console.log (t);
+            document.getElementById("heartrate").innerHTML = parseInt(t.v1,10);
+            addChartData(myChart4,"HeartRate", parseInt(t.v1,10));
+            document.getElementById("hrm").innerHTML = parseInt(t.v1,10);
+            flag_hrm = 1;
+          }
+          if (t.name == 'accel' && flag_accel == 0) {
+            document.getElementById("accel").innerHTML = t.v1 + ", " + t.v2 + ", " + t.v3;
+            flag_accel = 1;
+          }
+          if (t.name == 'gyro' && flag_gyro == 0) {
+            document.getElementById("gyro").innerHTML = t.v1 + ", " + t.v2 + ", " + t.v3;
+            flag_gyro = 1;
+          }
+          if (t.name == 'pressure' && flag_pressure == 0) {
+            document.getElementById("barometer").innerHTML = t.v1 + ", " + t.v2 + ", " + t.v3;
+            flag_pressure = 1;
+          }
+          if (t.name == 'light' && flag_light == 0) {
+            document.getElementById("light").innerHTML = parseInt(t.v1,10);
+            flag_light = 1;
           }
         });
       } else {
@@ -202,346 +225,110 @@
     });
 })(jQuery);
 
-/*
 (function ($) {
   "use strict";
 
+  var teams = null;
+  var member = [];
+  var lastGetTeams  = 0;
+
   try {
-    var vmap = $('#vmap');
-    if(vmap[0]) {
-      vmap.vectorMap( {
-        map: 'world_en',
-        backgroundColor: null,
-        color: '#ffffff',
-        hoverOpacity: 0.7,
-        selectedColor: '#1de9b6',
-        enableZoom: true,
-        showTooltip: true,
-        values: sample_data,
-        scaleColors: [ '#1de9b6', '#03a9f5'],
-        normalizeFunction: 'polynomial'
-      });
+    teams = document.getElementById("teams");
+    if (teams) {
+      getTeams();
     }
   } catch (error) {
     console.log(error);
   }
 
-  try {
-    var vmap1 = $('#vmap1');
-    if(vmap1[0]) {
-      vmap1.vectorMap( {
-        map: 'europe_en',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        enableZoom: true,
-        showTooltip: true
+  function getLocation (member) {
+    console.log (member);
+    for(var i = 0; i < member.length; i++) {
+      console.log("/json/location?uuid=" + member[i].uuid);
+      $.getJSON("/json/location?uuid=" + member[i].uuid, function (data) {
+        console.log(data);
+        data.forEach((t) => {
+          scbaMarker (t.v2, t.v1);
+        });
       });
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  try {
-    var vmap2 = $('#vmap2');
-    if(vmap2[0]) {
-      vmap2.vectorMap( {
-        map: 'usa_en',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        enableZoom: true,
-        showTooltip: true,
-        selectedColor: null,
-        hoverColor: null,
-        colors: {
-            mo: '#001BFF',
-            fl: '#001BFF',
-            or: '#001BFF'
-        },
-        onRegionClick: function ( event, code, region ) {
-            event.preventDefault();
-        }
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  try {
-    var vmap3 = $('#vmap3');
-    if(vmap3[0]) {
-      vmap3.vectorMap( {
-        map: 'germany_en',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        onRegionClick: function ( element, code, region ) {
-            var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
-            alert( message );
-        }
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  
-  try {
-    var vmap4 = $('#vmap4');
-    if(vmap4[0]) {
-      vmap4.vectorMap( {
-        map: 'france_fr',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        enableZoom: true,
-        showTooltip: true
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  try {
-    var vmap5 = $('#vmap5');
-    if(vmap5[0]) {
-      vmap5.vectorMap( {
-        map: 'russia_en',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        hoverOpacity: 0.7,
-        selectedColor: '#999999',
-        enableZoom: true,
-        showTooltip: true,
-        scaleColors: [ '#C8EEFF', '#006491' ],
-        normalizeFunction: 'polynomial'
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  
-  try {
-    var vmap6 = $('#vmap6');
-    if(vmap6[0]) {
-      vmap6.vectorMap( {
-        map: 'brazil_br',
-        color: '#007BFF',
-        borderColor: '#fff',
-        backgroundColor: '#fff',
-        onRegionClick: function ( element, code, region ) {
-            var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
-            alert( message );
-        }
-      });
-    }
-
-  } catch (error) {
-    console.log(error);
-  }
-})(jQuery);
-*/
-
-/*
-(function ($) {
-  "use strict";
-  try {
-    var progressbarSimple = $('.js-progressbar-simple');
-    progressbarSimple.each(function () {
-      var that = $(this);
-      var executed = false;
-      $(window).on('load', function () {
-
-        that.waypoint(function () {
-          if (!executed) {
-            executed = true;
-            that.progressbar({
-              update: function (current_percentage, $this) {
-                $this.find('.js-value').html(current_percentage + '%');
-              }
-            });
-          }
-        }, {
-            offset: 'bottom-in-view'
-          });
-
-      });
-    });
-  } catch (err) {
-    console.log(err);
-  }
-})(jQuery);
-
-(function ($) {
-  "use strict";
-  try {
-    var jscr1 = $('.js-scrollbar1');
-    if(jscr1[0]) {
-      const ps1 = new PerfectScrollbar('.js-scrollbar1');      
-    }
-    var jscr2 = $('.js-scrollbar2');
-    if (jscr2[0]) {
-      const ps2 = new PerfectScrollbar('.js-scrollbar2');
-
-    }
-  } catch (error) {
-    console.log(error);
-  }
-})(jQuery);
-
-(function ($) {
-  "use strict";
-
-  try {
-    $(".js-select2").each(function () {
-      $(this).select2({
-        minimumResultsForSearch: 20,
-        dropdownParent: $(this).next('.dropDownSelect2')
-      });
-    });
-
-  } catch (error) {
-    console.log(error);
-  }
-})(jQuery);
-
-(function ($) {
-  "use strict";
-  try {
-    var menu = $('.js-item-menu');
-    var sub_menu_is_showed = -1;
-
-    for (var i = 0; i < menu.length; i++) {
-      $(menu[i]).on('click', function (e) {
-        e.preventDefault();
-        $('.js-right-sidebar').removeClass("show-sidebar");        
-        if (jQuery.inArray(this, menu) == sub_menu_is_showed) {
-          $(this).toggleClass('show-dropdown');
-          sub_menu_is_showed = -1;
+  function getTeams () {
+    var url = "/json/teams";
+    console.log(url);
+    $.getJSON(url, function(data) {
+      var s = '<table class="table table-bordered table-striped">';
+          s+= '<thead><tr><td>#</td><td>uuid</td><td>timestamp</td><td>status</td></tr></thead>';
+      var cnt = 1;
+      member = [];
+      data.forEach((t) => {
+        console.log(t);
+        s += '<tr>';
+        s += '<td>' + cnt+ '</td>';
+        s += '<td><a href="/scba/?uuid=' + t.uuid + '">' + t.uuid+ '</a></td>';
+        s += '<td>' + t.ts + '</td>';
+        if (t.audit < 300) {
+        s += '<td><div class="led-green"></td>';
         }
         else {
-          for (var i = 0; i < menu.length; i++) {
-            $(menu[i]).removeClass("show-dropdown");
-          }
-          $(this).toggleClass('show-dropdown');
-          sub_menu_is_showed = jQuery.inArray(this, menu);
+        s += '<td><div class="led-red"></td>';
         }
+        s += '</tr>';
+        cnt += 1;
+        member.push(t);
       });
-    }
-    $(".js-item-menu, .js-dropdown").click(function (event) {
-      event.stopPropagation();
+      s += '</table>';
+      document.getElementById("teams").innerHTML = s;
+      console.log (member);
+      getLocation (member);
     });
 
-    $("body,html").on("click", function () {
-      for (var i = 0; i < menu.length; i++) {
-        menu[i].classList.remove("show-dropdown");
-      }
-      sub_menu_is_showed = -1;
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  var wW = $(window).width();
-    var right_sidebar = $('.js-right-sidebar');
-    var sidebar_btn = $('.js-sidebar-btn');
-
-    sidebar_btn.on('click', function (e) {
-      e.preventDefault();
-      for (var i = 0; i < menu.length; i++) {
-        menu[i].classList.remove("show-dropdown");
-      }
-      sub_menu_is_showed = -1;
-      right_sidebar.toggleClass("show-sidebar");
-    });
-
-    $(".js-right-sidebar, .js-sidebar-btn").click(function (event) {
-      event.stopPropagation();
-    });
-
-    $("body,html").on("click", function () {
-      right_sidebar.removeClass("show-sidebar");
-    });
-
-  try {
-    var arrow = $('.js-arrow');
-    arrow.each(function () {
-      var that = $(this);
-      that.on('click', function (e) {
-        e.preventDefault();
-        that.find(".arrow").toggleClass("up");
-        that.toggleClass("open");
-        that.parent().find('.js-sub-list').slideToggle("250");
-      });
-    });
-
-  } catch (error) {
-    console.log(error);
-  }
-
-  try {
-    $('.hamburger').on('click', function () {
-      $(this).toggleClass('is-active');
-      $('.navbar-mobile').slideToggle('500');
-    });
-    $('.navbar-mobile__list li.has-dropdown > a').on('click', function () {
-      var dropdown = $(this).siblings('ul.navbar-mobile__dropdown');
-      $(this).toggleClass('active');
-      $(dropdown).slideToggle('500');
-      return false;
-    });
-  } catch (error) {
-    console.log(error);
+    lastGetTeams = Math.round((new Date()).getTime() / 1000);
+    setTimeout(getTeams, 5000);
   }
 })(jQuery);
 
 (function ($) {
   "use strict";
+
+  var uuid = "";
+  var lastGetUUID  = 0;
+
   try {
-    var list_load = $('.js-list-load');
-    if (list_load[0]) {
-      list_load.each(function () {
-        var that = $(this);
-        that.find('.js-load-item').hide();
-        var load_btn = that.find('.js-load-btn');
-        load_btn.on('click', function (e) {
-          $(this).text("Loading...").delay(1500).queue(function (next) {
-            $(this).hide();
-            that.find(".js-load-item").fadeToggle("slow", 'swing');
-          });
-          e.preventDefault();
-        });
-      })
+    uuid = document.getElementById("uuid").innerHTML;
+    console.log (uuid);
+    if (uuid) {
+      getLocationUUID();
     }
   } catch (error) {
     console.log(error);
   }
 
+  function getLocationUUID () {
+    console.log (uuid);
+    console.log("/json/location?uuid=" + uuid);
+    $.getJSON("/json/location?uuid=" + uuid, function (data) {
+      console.log(data);
+      data.forEach((t) => {
+        document.getElementById("gps").innerHTML = t.v2 + ", " + t.v1;
+        scbaMarker (t.v2, t.v1);
+      });
+    });
+    lastGetUUID = Math.round((new Date()).getTime() / 1000);
+    setTimeout(getLocationUUID, 5000);
+  }
+
 })(jQuery);
 
 (function ($) {
-  "use strict";
+  $('#button').click (function() {
+    var text = $('#comment').val();
 
-  try {
-    $('[data-toggle="tooltip"]').tooltip();
-
-  } catch (error) {
-    console.log(error);
-  }
-
-  try {
-    var inbox_wrap = $('.js-inbox');
-    var message = $('.au-message__item');
-    message.each(function(){
-      var that = $(this);
-
-      that.on('click', function(){
-        $(this).parent().parent().parent().toggleClass('show-chat-box');
-      });
+    $.getJSON("/json/comment?text=" + text, function (data) {
+      document.getElementById("button").innerHTML = data;
     });
-  } catch (error) {
-    console.log(error);
-  }
+
+  });
 })(jQuery);
-*/
+
