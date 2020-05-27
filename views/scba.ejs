@@ -43,8 +43,9 @@
         <div class="container-fluid">
           <ul class="navbar-mobile__list list-unstyled">
           <li><a href="#"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-          <li><a href="#heatmap"><i class="fas fa-chart-bar"></i>Informations</a></li>
-          <li><a href="#events"><i class="fas fa-table"></i>Events</a></li>
+          <li><a href="#locations"><i class="fas fa-crosshairs"></i>Locations</a></li>
+          <li><a href="#informations"><i class="fas fa-info-circle"></i>Informations</a></li>
+          <li><a href="#comment"><i class="fas fa-comment-alt"></i>Comment</a></li>
           </ul>
         </div>
       </nav>
@@ -56,8 +57,9 @@
         <nav class="navbar-sidebar">
           <ul class="list-unstyled navbar__list">
           <li><a href="#"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-          <li><a href="#heatmap"><i class="fas fa-chart-bar"></i>Informations</a></li>
-          <li><a href="#events"><i class="fas fa-table"></i>Events</a></li>
+          <li><a href="#locations"><i class="fas fa-crosshairs"></i>Locations</a></li>
+          <li><a href="#informations"><i class="fas fa-info-circle"></i>Informations</a></li>
+          <li><a href="#comment"><i class="fas fa-comment-alt"></i>Comment</a></li>
           </ul>
         </nav>
       </div>
@@ -144,10 +146,10 @@
             </div>
             <!-- row m-t-15 -->
 
-            <div class="row m-t-15" id="information">
+            <div class="row m-t-15" id="informations">
               <div class="col-sm-12 col-lg-12">
                 <div class="card">
-                  <div class="card-header"><h3 class="card-title"><i class="zmdi zmdi-account-circle"></i>&nbsp;Information</h3></div>
+                  <div class="card-header"><h3 class="card-title"><i class="zmdi zmdi-account-circle"></i>&nbsp;Informations</h3></div>
                   <div class="card-body">
                     <table class="table table-bordered table-striped">
                     <thead><tr><td>type</td><td>value</td></thead>
@@ -166,15 +168,30 @@
             </div>
             <!-- row m-t-15 -->
 
-            <div class="row m-t-15" id="information">
+            <div class="row m-t-15" id="comment">
               <div class="col-sm-12 col-lg-12">
                 <div class="card">
                   <div class="card-header"><h3 class="card-title"><i class="zmdi zmdi-comment-alt-text"></i>&nbsp;Comment</h3></div>
                   <div class="card-body">
                     <form class="form-inline" role="form">
-                      <input id="comment" type="text" class="form-control" placeholder="Text input">&nbsp;&nbsp;
+                      <input id="comment1" type="text" class="form-control" placeholder="Text input">&nbsp;&nbsp;
                       <button id="button" class="btn btn-primary" type="button">send</button>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- row m-t-15 -->
+
+            <div class="row m-t-15" id="cctv">
+              <div class="col-sm-12 col-lg-12">
+                <div class="card">
+                  <div class="card-header"><h3 class="card-title"><i class="zmdi zmdi-camera"></i>&nbsp;CCTV</h3></div>
+                  <div class="card-body">
+                    <select id="select" class="selectpicker">
+                      <option>rtsp://freja.hiof.no:1935/rtplive/definst/hessdalen03.stream</option>
+                      <option>rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -186,10 +203,6 @@
                 <div class="card">
                   <div class="card-header"><h3 class="card-title"><i class="zmdi zmdi-comment-alt-text"></i>&nbsp;Event</h3></div>
                   <div class="card-body">
-                    <form class="form-inline" role="form">
-                      <input id="comment" type="text" class="form-control" placeholder="Text input">&nbsp;&nbsp;
-                      <button id="button" class="btn btn-primary" type="button">send</button>
-                    </form>
                   </div>
                 </div>
               </div>
@@ -232,8 +245,8 @@
     <script src="/js/responsive.bootstrap4.min.js"></script>
 
     <script src="/js/gmap.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwtnd2FbijCRNa9sgeVJ51oDj4O_3t6So&libraries=visualization,geometry,drawing&callback=initMap" async defer></script>
-    <script src="/js/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDndqINgUgGs6gENZOWErhIP1bVCQwSf6k&libraries=visualization,geometry,drawing&callback=initMap" async defer></script>
+    <script src="/js/dash.js"></script>
 
 
 </body>

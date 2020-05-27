@@ -1,5 +1,6 @@
 CREATE USER 'sqladmin'@'localhost' IDENTIFIED BY 'admin'; GRANT ALL PRIVILEGES ON *.* TO 'sqladmin'@'localhost' WITH GRANT OPTION; FLUSH PRIVILEGES;
 CREATE DATABASE scba CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE scba;
 DROP TABLE scba;
 CREATE TABLE IF NOT EXISTS scba ( 
   id             int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -35,4 +36,13 @@ CREATE TABLE IF NOT EXISTS android (
   v3             float,
   ts             timestamp NOT NULL
 );
+
+DROP TABLE users;
+CREATE TABLE IF NOT EXISTS users (
+  id             varchar(32) UNIQUE,
+  passwd         varchar(32) NOT NULL,
+  username       varchar(32) NOT NULL,
+  uuid           varchar(64) UNIQUE
+);
+
 

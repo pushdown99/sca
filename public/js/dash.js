@@ -156,7 +156,7 @@
 
   function getWatch () {
     var uuid = document.getElementById("uuid").innerHTML;
-    var url = "/json/watch/?uuid=" + uuid + "&timestamp="+lastGetWatch+"&limit=50";
+    var url = "/json/watch/?uuid=" + uuid + "&timestamp="+lastGetWatch+"&limit=100";
     console.log(url);
     $.getJSON(url, function(data) {
       var flag_hrm = 0;
@@ -323,12 +323,20 @@
 
 (function ($) {
   $('#button').click (function() {
-    var text = $('#comment').val();
+    var text = $('#comment1').val();
+    console.log(text);
 
     $.getJSON("/json/comment?text=" + text, function (data) {
-      document.getElementById("button").innerHTML = data;
+      //document.getElementById("button").innerHTML = data;
     });
+  });
 
+  $('#select').change (function() {
+    var text = $(this).val();
+
+    $.getJSON("/json/rtsp?text=" + text, function (data) {
+      //document.getElementById("button").innerHTML = data;
+    });
   });
 })(jQuery);
 
