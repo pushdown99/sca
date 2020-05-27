@@ -82,6 +82,21 @@ app.get('/scba', function(req, res){
   res.render('scba', {uuid: uuid});
 })
 
+app.get('/scba/:uuid', function(req, res){
+  var uuid = req.params.uuid;
+  var sql = "SELECT * FROM scba WHERE uuid = '" + uuid + "' ORDER BY ts DESC LIMIT 1";
+  db.query(sql, function (err, result) {
+    if (err) {
+      console.error("[mysql] Query (" + err + ")");
+      console.error("[mysql] * " + sql);
+    }
+    else if(result.length > 0) {
+      res.send(JSON.stringify(result));
+    }
+    else res.send("");
+  });
+})
+
 app.get('/users', function(req, res){
   var id = req.params.id;
   var sql = "SELECT * FROM users";
