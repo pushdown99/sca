@@ -9,7 +9,7 @@ var fs      = require('fs');
 var app = express();
 var path = require('path');
 var server = require('http').createServer(app);
-var port = process.env.PORT || 4000;
+var port = process.env.PORT || 9000;
 
 var db = mysql.createConnection({
   host     : 'localhost',
@@ -33,7 +33,7 @@ db.query("set time_zone='+9:00'", function (err, result) {
 });
 
 const websocket = require('ws')
-const wss = new websocket.Server({ port: 4001 });
+const wss = new websocket.Server({ port: 9001 });
 
 app.use(express.json());
 app.use(express.urlencoded());
